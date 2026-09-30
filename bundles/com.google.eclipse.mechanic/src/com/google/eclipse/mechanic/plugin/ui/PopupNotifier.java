@@ -12,6 +12,7 @@ package com.google.eclipse.mechanic.plugin.ui;
 
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.notifications.NotificationPopup;
 import org.eclipse.swt.SWT;
@@ -148,6 +149,8 @@ public class PopupNotifier {
     GridLayoutFactory.fillDefaults().applyTo(composite);
     Label label = new Label(composite, SWT.WRAP);
     label.setText("The Workspace Mechanic found issues that need your attention.");
+    // Without a width hint the label asks for its full text width and is cut off.
+    GridDataFactory.fillDefaults().grab(true, false).hint(360, SWT.DEFAULT).applyTo(label);
     createLink(composite, "View and correct configuration issues", this::correctConfigurationIssues);
     createLink(composite, "Disable this popup", mechanicPreferences::doNotShowPopup);
     return composite;
