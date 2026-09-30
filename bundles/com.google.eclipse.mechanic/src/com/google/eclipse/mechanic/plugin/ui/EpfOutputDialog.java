@@ -174,16 +174,14 @@ public class EpfOutputDialog extends BaseOutputDialog {
     acceptedPreferences.setInput(preferences.keySet().toArray());
 
     acceptedPreferences.setAllChecked(true);
-    acceptedPreferences.addCheckStateListener(new ICheckStateListener() {
-      public void checkStateChanged(CheckStateChangedEvent event) {
-        Set<String> newSelectedKeys = new HashSet<String>();
-        for (Object obj : acceptedPreferences.getCheckedElements()) {
-          newSelectedKeys.add((String) obj);
-        }
-
-        selectedKeys = newSelectedKeys;
-        validate();
+    acceptedPreferences.addCheckStateListener(event -> {
+      Set<String> newSelectedKeys = new HashSet<String>();
+      for (Object obj : acceptedPreferences.getCheckedElements()) {
+        newSelectedKeys.add((String) obj);
       }
+
+      selectedKeys = newSelectedKeys;
+      validate();
     });
 
     tableContainer.layout();

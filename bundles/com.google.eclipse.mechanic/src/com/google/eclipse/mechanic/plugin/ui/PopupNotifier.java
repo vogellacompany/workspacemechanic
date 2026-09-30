@@ -81,37 +81,35 @@ public class PopupNotifier {
       final IMechanicPreferences mechanicPreferences) {
     this.service = mechanicService;
     this.mechanicPreferences =  mechanicPreferences;
-    this.statusChangeListener = new IStatusChangeListener() {
-      public void statusChanged(StatusChangedEvent event) {
-        switch (event.getStatus()) {
-          case FAILED:
-            if (mechanicPreferences.isShowPopup()) {
-              if (showOnFailure) {
-                showPopup();
-              }
-              showOnFailure = false;
-            } else {
-              // By setting showOnFailure here, the popup will appear once the preference is unset
-              showOnFailure = true;
+    this.statusChangeListener = event -> {
+      switch (event.getStatus()) {
+        case FAILED:
+          if (mechanicPreferences.isShowPopup()) {
+            if (showOnFailure) {
+              showPopup();
             }
-            break;
-
-          case PASSED:
-          case STOPPED:
-            /*
-             * Once the mechanic has passed all tasks, or has stopped analyzing, the
-             * first subsequent failure should show the popup.
-             */
+            showOnFailure = false;
+          } else {
+            // By setting showOnFailure here, the popup will appear once the preference is unset
             showOnFailure = true;
-            break;
+          }
+          break;
 
-          case UPDATING:
-            // Do nothing
-            break;
+        case PASSED:
+        case STOPPED:
+          /*
+           * Once the mechanic has passed all tasks, or has stopped analyzing, the
+           * first subsequent failure should show the popup.
+           */
+          showOnFailure = true;
+          break;
 
-          default:
-            throw new IllegalArgumentException("Unknown status: " + event.getStatus());
-        }
+        case UPDATING:
+          // Do nothing
+          break;
+
+        default:
+          throw new IllegalArgumentException("Unknown status: " + event.getStatus());
       }
     };
   }

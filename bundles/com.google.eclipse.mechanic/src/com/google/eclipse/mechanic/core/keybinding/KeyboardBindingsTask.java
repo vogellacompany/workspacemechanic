@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
 
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ParameterizedCommand;
@@ -102,28 +101,25 @@ class KeyboardBindingsTask extends CompositeTask {
     return result.toString();
   }
 
-  private final Function<Binding, String> bindingToReadableStringTransformFunction = new Function<Binding, String>() {
-    
-    public String apply(Binding b) {
-      try {
-        return b.getTriggerSequence().format() + " : " + b.getParameterizedCommand().getName();
-      } catch (NotDefinedException e) {
-        log.logError(e);
-        throw new RuntimeException(e);
-      } catch (RuntimeException e) {
-        log.logError(e);
-        throw e;
-      }
+  private String toReadableString(Binding b) {
+    try {
+      return b.getTriggerSequence().format() + " : " + b.getParameterizedCommand().getName();
+    } catch (NotDefinedException e) {
+      log.logError(e);
+      throw new RuntimeException(e);
+    } catch (RuntimeException e) {
+      log.logError(e);
+      throw e;
     }
-  };
+  }
   
   private Set<String> calculateReadableAddedBindings(Action action) {
     Set<String> result = new HashSet<>();
     for(KbaChangeSet changeSet : model.getKeyBindingsChangeSetsWith(action)) {
       doEvaluate(changeSet).keyBindings.addedBindings.stream()
-          .map(bindingToReadableStringTransformFunction).forEach(result::add);
+          .map(this::toReadableString).forEach(result::add);
       doEvaluate(changeSet).keyBindings.removedBindings.stream()
-          .map(bindingToReadableStringTransformFunction).forEach(result::add);
+          .map(this::toReadableString).forEach(result::add);
     }
     return result;
   }
@@ -255,13 +251,11 @@ class KeyboardBindingsTask extends CompositeTask {
       final EvaluationResult result = doEvaluate(changeSet);
       // If there was any modification, persist it
       if (result.keyBindings.isDirty()) {
-        workbench.getDisplay().syncExec(new Runnable() {
-          public void run() {
-            try {
-              bindingService.savePreferences(result.scheme, result.keyBindings.toArray());
-            } catch (IOException e) {
-              throw new RuntimeException(e);
-            }
+        workbench.getDisplay().syncExec(() -> {
+          try {
+            bindingService.savePreferences(result.scheme, result.keyBindings.toArray());
+          } catch (IOException e) {
+            throw new RuntimeException(e);
           }
         });
       }

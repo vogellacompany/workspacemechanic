@@ -55,33 +55,29 @@ public final class KbaBootstrapper {
     this.currentPlatform = currentPlatform;
   }
 
-  private static final Predicate<EclBinding> ACCEPT_SYSTEM_BINDINGS_FILTER = new Predicate<EclBinding>() {
-    public boolean test(EclBinding b) {
-      if (b.getType() != BindingType.SYSTEM) {
-        return false;
-      }
-      if (!b.hasCommand()) {
-        // Uh? I have no idea what these mean, but they exist -- they are system
-        // bindings to no command.
-        return false;
-      }      
-      return true;
+  private static final Predicate<EclBinding> ACCEPT_SYSTEM_BINDINGS_FILTER = b -> {
+    if (b.getType() != BindingType.SYSTEM) {
+      return false;
     }
+    if (!b.hasCommand()) {
+      // Uh? I have no idea what these mean, but they exist -- they are system
+      // bindings to no command.
+      return false;
+    }      
+    return true;
   };
 
-  private static final Predicate<EclBinding> ACCEPT_USER_BINDINGS_FILTER = new Predicate<EclBinding>() {
-    public boolean test(EclBinding b) {
-      if (b.getType() != BindingType.USER) {
+  private static final Predicate<EclBinding> ACCEPT_USER_BINDINGS_FILTER = b -> {
+    if (b.getType() != BindingType.USER) {
+      return false;
+    }
+    if (!b.hasCommand()) {
+      // TODO: support removing commands
+      if (!KeyboardBindingsTask.ENABLE_EXP_REM()) {
         return false;
       }
-      if (!b.hasCommand()) {
-        // TODO: support removing commands
-        if (!KeyboardBindingsTask.ENABLE_EXP_REM()) {
-          return false;
-        }
-      }
-      return true;
     }
+    return true;
   };
 
   public void evaluate(IPath outputLocation,

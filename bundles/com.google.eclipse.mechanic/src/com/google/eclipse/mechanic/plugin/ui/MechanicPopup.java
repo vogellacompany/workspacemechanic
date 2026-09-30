@@ -85,18 +85,14 @@ public class MechanicPopup extends AbstractPopup {
     label.setText(
         "The Workspace Mechanic found\nissues that need your attention.");
 
-    createHyperlink(parent, "View and correct configuration issues", new Runnable() {
-      public void run() {
-        close();
-        correctConfigurationIssues();
-      }
+    createHyperlink(parent, "View and correct configuration issues", () -> {
+      close();
+      correctConfigurationIssues();
     });
 
-    createHyperlink(parent, "Disable this popup", new Runnable() {
-      public void run() {
-        close();
-        doNotShowPopup();
-      }
+    createHyperlink(parent, "Disable this popup", () -> {
+      close();
+      doNotShowPopup();
     });
   }
 

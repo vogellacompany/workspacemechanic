@@ -113,13 +113,11 @@ public class ShowViewScanner extends ResourceTaskScanner {
       }
 
       final Set<String> remaining = new HashSet<>(list);
-      Display.getDefault().syncExec(new Runnable() {
-        public void run() {
-          for (IWorkbenchWindow workbenchWindow : workbench.getWorkbenchWindows()) {
-            for (IWorkbenchPage workbenchPage : workbenchWindow.getPages()) {
-              for (IViewReference viewReference : workbenchPage.getViewReferences()) {
-                remaining.remove(viewReference.getId());
-              }
+      Display.getDefault().syncExec(() -> {
+        for (IWorkbenchWindow workbenchWindow : workbench.getWorkbenchWindows()) {
+          for (IWorkbenchPage workbenchPage : workbenchWindow.getPages()) {
+            for (IViewReference viewReference : workbenchPage.getViewReferences()) {
+              remaining.remove(viewReference.getId());
             }
           }
         }
@@ -128,17 +126,15 @@ public class ShowViewScanner extends ResourceTaskScanner {
     }
 
     public void run() {
-      Display.getDefault().syncExec(new Runnable() {
-        public void run() {
-          IWorkbench workbench = PlatformUI.getWorkbench();
-          IWorkbenchWindow activeWorkbenchWindow = workbench.getActiveWorkbenchWindow();
-          IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
-          for (String viewId : list) {
-            try {
-              activePage.showView(viewId);
-            } catch (PartInitException e) {
-              LOG.log(Level.SEVERE, "Can't open view " + viewId, e);
-            }
+      Display.getDefault().syncExec(() -> {
+        IWorkbench workbench = PlatformUI.getWorkbench();
+        IWorkbenchWindow activeWorkbenchWindow = workbench.getActiveWorkbenchWindow();
+        IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
+        for (String viewId : list) {
+          try {
+            activePage.showView(viewId);
+          } catch (PartInitException e) {
+            LOG.log(Level.SEVERE, "Can't open view " + viewId, e);
           }
         }
       });

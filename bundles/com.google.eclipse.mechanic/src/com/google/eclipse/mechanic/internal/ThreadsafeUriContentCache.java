@@ -48,11 +48,9 @@ public final class ThreadsafeUriContentCache implements IUriContentProvider {
     if (!cacheFileUris && "file".equals(uri.getScheme())) {
       return delegate.get(uri);
     }
-    FutureTask<byte[]> future = new FutureTask<byte[]>(new Callable<byte[]>() {
-      public byte[] call() throws IOException {
-        try (InputStream in = delegate.get(uri)) {
-          return in.readAllBytes();
-        }
+    FutureTask<byte[]> future = new FutureTask<>(() -> {
+      try (InputStream in = delegate.get(uri)) {
+        return in.readAllBytes();
       }
     });
 
@@ -80,11 +78,7 @@ public final class ThreadsafeUriContentCache implements IUriContentProvider {
     if (!cacheFileUris && "file".equals(uri.getScheme())) {
       return delegate.lastModifiedTime(uri);
     }
-    FutureTask<Long> future = new FutureTask<Long>(new Callable<Long>() {
-      public Long call() throws IOException {
-        return delegate.lastModifiedTime(uri);
-      }
-    });
+    FutureTask<Long> future = new FutureTask<>(() -> delegate.lastModifiedTime(uri));
 
     FutureTask<Long> futureToFetch = lastModCache.putIfAbsent(uri, future);
     if (futureToFetch == null) {

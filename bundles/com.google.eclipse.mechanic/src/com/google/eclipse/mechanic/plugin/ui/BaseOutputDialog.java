@@ -145,11 +145,7 @@ public abstract class BaseOutputDialog extends Dialog {
   }
 
 
-  private final ModifyListener validateOnChange = new ModifyListener() {
-    public void modifyText(ModifyEvent e) {
-      validate();
-    }
-  };
+  private final ModifyListener validateOnChange = e -> validate();
 
   protected Text createTextBox(Composite parent) {
     Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
@@ -193,11 +189,10 @@ public abstract class BaseOutputDialog extends Dialog {
     // Add saved file location
     createLabel(container, "Saved File Location:");
     savedLocationText = createTextBox(container);
-    savedLocationText.addModifyListener(new ModifyListener() {
-      public void modifyText(ModifyEvent e) {
-        willVerifyOverwrite = true;
-        validate();
-      }});
+    savedLocationText.addModifyListener(e -> {
+      willVerifyOverwrite = true;
+      validate();
+    });
 
     // TODO: this button belongs in the same line as the textBox above
     Button browseButton = new Button(container, SWT.PUSH);

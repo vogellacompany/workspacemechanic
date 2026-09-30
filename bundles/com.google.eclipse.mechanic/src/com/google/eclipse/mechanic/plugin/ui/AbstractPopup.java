@@ -95,11 +95,7 @@ public abstract class AbstractPopup {
     setPosition(shell);
     shell.setVisible(true);
     if (displayTimeMillis > 0) {
-      display.timerExec(displayTimeMillis, new Runnable() {
-        public void run() {
-          close();
-        }
-      });
+      display.timerExec(displayTimeMillis, this::close);
     }
   }
 

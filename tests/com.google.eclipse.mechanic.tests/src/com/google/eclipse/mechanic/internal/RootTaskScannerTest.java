@@ -33,22 +33,18 @@ public class RootTaskScannerTest {
   public void testThatAThrowingTaskScannerDoesNotKillTheMechanic() {
     // TODO(zorzella): where are we supposed to put test infra, like fakes
     // for ScannersExtensionPointInterface, TaskScanner and TaskCollector?
-    Supplier<List<TaskScanner> > scannerPoint = new Supplier<List<TaskScanner>>() {
-      public List<TaskScanner> get() {
-        List<TaskScanner> result = new ArrayList<TaskScanner>();
-        result.add(new TaskScanner() {
-          public void scan(TaskCollector collector) {
-            throw new RuntimeException();
-          }
-        });
-        return result;
-      }
+    Supplier<List<TaskScanner> > scannerPoint = () -> {
+      List<TaskScanner> result = new ArrayList<TaskScanner>();
+      result.add(new TaskScanner() {
+        public void scan(TaskCollector collector) {
+          throw new RuntimeException();
+        }
+      });
+      return result;
     };
     MechanicLog log = new MechanicLog(new EmptyLog());
     RootTaskScanner scanner = new RootTaskScanner(log, scannerPoint);
-    TaskCollector collector = new TaskCollector() {
-      public void collect(Task task) {}
-    };
+    TaskCollector collector = task -> {};
     scanner.scan(collector);
     // We just want to be sure that this does not throw
   }

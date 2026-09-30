@@ -73,10 +73,6 @@ public class MaximizeWorkbenchTask extends CompositeTask {
    * Called to bring the environment in compliance with this test.
    */
   public void run() {
-    Display.getDefault().syncExec(new Runnable() {
-      public void run() {
-        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setMaximized(true);
-      }
-    });
+    Display.getDefault().syncExec(() -> PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setMaximized(true));
   }
 }

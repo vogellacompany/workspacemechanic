@@ -91,11 +91,9 @@ public class MechanicStatusControlContribution extends WorkbenchWindowControlCon
   public MechanicStatusControlContribution() {
     this.preferenceRecordingService = MechanicPlugin.getDefault().getPreferenceRecordingService();
     // to be registered in our initialize method, and disposed of with us
-    this.statusListener = new IStatusChangeListener() {
-      public void statusChanged(StatusChangedEvent e) {
-        setMechanicStatus(e.getStatus());
-        updateDisplay();
-      }
+    this.statusListener = e -> {
+      setMechanicStatus(e.getStatus());
+      updateDisplay();
     };
     updateRecordingStatusMenuItems(preferenceRecordingService.isRecording());
   }
@@ -255,11 +253,7 @@ public class MechanicStatusControlContribution extends WorkbenchWindowControlCon
   private void createContextMenu(Control control) {
     MenuManager mgr = new MenuManager("#PopupMenu");
     mgr.setRemoveAllWhenShown(true);
-    mgr.addMenuListener(new IMenuListener() {
-      public void menuAboutToShow(IMenuManager manager) {
-        fillContextMenu(manager);
-      }
-    });
+    mgr.addMenuListener(this::fillContextMenu);
 
     Menu menu = mgr.createContextMenu(control);
     control.setMenu(menu);
