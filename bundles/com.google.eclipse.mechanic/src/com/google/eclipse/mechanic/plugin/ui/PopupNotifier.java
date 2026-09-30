@@ -18,7 +18,6 @@ import org.eclipse.ui.PlatformUI;
 import com.google.eclipse.mechanic.IMechanicService;
 import com.google.eclipse.mechanic.IStatusChangeListener;
 import com.google.eclipse.mechanic.RepairDecisionProvider;
-import com.google.eclipse.mechanic.StatusChangedEvent;
 import com.google.eclipse.mechanic.plugin.core.IMechanicPreferences;
 
 /**
@@ -75,7 +74,6 @@ public class PopupNotifier {
    * instance while one is open.
    */
   private volatile boolean visible = false;
-
 
   public PopupNotifier(IMechanicService mechanicService,
       final IMechanicPreferences mechanicPreferences) {

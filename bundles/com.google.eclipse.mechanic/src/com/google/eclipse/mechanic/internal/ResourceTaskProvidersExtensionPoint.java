@@ -13,15 +13,12 @@ package com.google.eclipse.mechanic.internal;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.eclipse.core.runtime.Platform;
-
 import com.google.eclipse.mechanic.IResourceTaskProvider;
-import com.google.eclipse.mechanic.plugin.core.MechanicPlugin;
 
 /**
  * Code behind the {@code com.google.eclipse.mechanic.resourcetaskproviders} extension point.
  *
- * <p>This class interfaces with the {@link Platform}, reading all extensions of the
+ * <p>This class interfaces with the {@link org.eclipse.core.runtime.Platform}, reading all extensions of the
  * {@code tasks} extension point, providing a mechanism for translating their
  * implementations to instances of {@link IResourceTaskProvider}.
  */
@@ -58,7 +55,7 @@ public class ResourceTaskProvidersExtensionPoint {
   /**
    * Clears the list of task providers.
    * 
-   * <p><em>This should only be called by {@link MechanicPlugin#stop}.</em>
+   * <p><em>This should only be called by {@link com.google.eclipse.mechanic.plugin.core.MechanicPlugin#stop}.</em>
    */
   public static void dispose() {
     SingletonHolder.instance = null;

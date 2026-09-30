@@ -22,7 +22,6 @@ import com.google.eclipse.mechanic.LastModifiedPreferencesFileTask;
 import com.google.eclipse.mechanic.ListCollector;
 import com.google.eclipse.mechanic.ReconcilingPreferencesTask;
 import com.google.eclipse.mechanic.ResourceTaskScanner;
-import com.google.eclipse.mechanic.Task;
 import com.google.eclipse.mechanic.TaskCollector;
 import com.google.eclipse.mechanic.plugin.core.MechanicLog;
 import com.google.eclipse.mechanic.plugin.core.MechanicPlugin;

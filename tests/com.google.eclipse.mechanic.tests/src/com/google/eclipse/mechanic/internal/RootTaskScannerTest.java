@@ -10,15 +10,12 @@
 
 package com.google.eclipse.mechanic.internal;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
 
-import com.google.eclipse.mechanic.Task;
 import com.google.eclipse.mechanic.TaskCollector;
 import com.google.eclipse.mechanic.TaskScanner;
 import com.google.eclipse.mechanic.plugin.core.MechanicLog;

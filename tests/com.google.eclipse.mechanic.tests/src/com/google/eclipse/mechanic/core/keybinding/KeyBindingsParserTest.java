@@ -20,11 +20,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.google.eclipse.mechanic.core.keybinding.KbaBinding;
-import com.google.eclipse.mechanic.core.keybinding.KbaChangeSet;
 import com.google.eclipse.mechanic.core.keybinding.KeyBindingsModel.KbaMetaData;
-import com.google.eclipse.mechanic.core.keybinding.KeyBindingsModel;
-import com.google.eclipse.mechanic.core.keybinding.KeyBindingsParser;
 import com.google.eclipse.mechanic.tests.internal.RunAsJUnitTest;
 
 @RunAsJUnitTest
@@ -69,7 +65,6 @@ public class KeyBindingsParserTest {
     "    },\n" + // Comma *1
     "  ]\n" +
     "}\n";
-
 
   // *1 indicates that there used to be a comma at the end of the line, but
   // that's not supported in strict mode.

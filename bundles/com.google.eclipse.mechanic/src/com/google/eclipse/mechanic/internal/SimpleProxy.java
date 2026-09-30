@@ -9,8 +9,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
-import com.google.eclipse.mechanic.CompositeTaskInterface;
-
 /**
  * Proxy object for a {@link CompositeTaskInterface}.
  *

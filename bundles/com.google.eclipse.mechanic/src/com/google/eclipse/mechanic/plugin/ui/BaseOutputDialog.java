@@ -22,7 +22,6 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -143,7 +142,6 @@ public abstract class BaseOutputDialog extends Dialog {
     Label titleLabel = new Label(parent, SWT.BEGINNING);
     titleLabel.setText(text);
   }
-
 
   private final ModifyListener validateOnChange = e -> validate();
 
