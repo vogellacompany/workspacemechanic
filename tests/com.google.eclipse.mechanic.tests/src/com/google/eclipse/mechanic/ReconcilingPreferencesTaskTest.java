@@ -16,6 +16,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -36,7 +37,7 @@ public class ReconcilingPreferencesTaskTest {
    */
   @Test
   public void testSanity_Unicode() throws IOException {
-    URL url = new URL("platform:/plugin/com.google.eclipse.mechanic.tests/testdata/reconcile_unicode.epf");
+    URL url = URI.create("platform:/plugin/com.google.eclipse.mechanic.tests/testdata/reconcile_unicode.epf").toURL();
     InputStream inputStream = url.openConnection().getInputStream();
 
     assertNotNull(inputStream);
