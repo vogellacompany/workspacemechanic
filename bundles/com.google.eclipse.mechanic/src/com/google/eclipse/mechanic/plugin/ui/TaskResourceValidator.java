@@ -17,7 +17,7 @@ import org.eclipse.jface.dialogs.IInputValidator;
 
 /**
  * Validates a resource.as either a viable absolute directory on the local filesystem,
- * or, if configured. a http:, https: or file: path.
+ * or, if configured, an https: or file: URL.
  */
 class TaskResourceValidator implements IInputValidator {
   static final String PATH_DOES_NOT_EXIST = "The specified path does not exist.";
@@ -45,8 +45,7 @@ class TaskResourceValidator implements IInputValidator {
     try {
       URI uri = new URI(newText);
       String scheme = uri.getScheme();
-      if (!(scheme == null || "file".equals(scheme) || "http".equals(scheme) || "https"
-          .equals(scheme))) {
+      if (!(scheme == null || "file".equals(scheme) || "https".equals(scheme))) {
         return UNACCEPTABLE_PROTOCOL;
       }
       if (scheme == null) {

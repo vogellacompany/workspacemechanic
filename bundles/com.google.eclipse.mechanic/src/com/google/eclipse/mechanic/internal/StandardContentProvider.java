@@ -28,6 +28,10 @@ public final class StandardContentProvider implements IUriContentProvider {
   }
 
   private static URLConnection openConnection(URI uri) throws IOException {
+    // Tasks change IDE preferences, so they must not be fetched over an unauthenticated channel.
+    if (!"https".equals(uri.getScheme()) && !"file".equals(uri.getScheme())) {
+      throw new IOException("Only https: and file: task URLs are supported: " + uri);
+    }
     URLConnection connection = uri.toURL().openConnection();
     connection.setConnectTimeout(TIMEOUT_MILLIS);
     connection.setReadTimeout(TIMEOUT_MILLIS);

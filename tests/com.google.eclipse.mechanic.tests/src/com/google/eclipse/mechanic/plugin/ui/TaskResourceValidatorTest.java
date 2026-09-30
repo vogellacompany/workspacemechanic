@@ -95,7 +95,7 @@ public class TaskResourceValidatorTest {
   @Test
 
   public void testValidation_uri() {
-    validate("http://www.google.com", null, RELATIVE_PATH);
+    validate("http://www.google.com", UNACCEPTABLE_PROTOCOL, RELATIVE_PATH);
     validate("https://www.google.com", null, RELATIVE_PATH);
     validate("file:///tmp/foo", null, RELATIVE_PATH);
   }
@@ -103,7 +103,7 @@ public class TaskResourceValidatorTest {
   @Test
 
   public void testValidation_weridUri() {
-    validate("http://www.google.com/#p&104=305", null, RELATIVE_PATH);
+    validate("https://www.google.com/#p&104=305", null, RELATIVE_PATH);
   }
 
   @Test
