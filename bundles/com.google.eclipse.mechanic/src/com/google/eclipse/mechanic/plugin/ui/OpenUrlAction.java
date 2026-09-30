@@ -11,6 +11,7 @@
 package com.google.eclipse.mechanic.plugin.ui;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 import org.eclipse.jface.action.Action;
@@ -55,7 +56,7 @@ public final class OpenUrlAction extends Action {
    * @throws IllegalArgumentException when the URL is invalid.
    */
   public OpenUrlAction(String url, String text) throws MalformedURLException {
-    this.url = new URL(url);
+    this.url = URI.create(url).toURL();
     setText(text);
   }
 
