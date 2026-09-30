@@ -20,6 +20,7 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
@@ -159,6 +160,13 @@ public class MechanicPreferencePage extends FieldEditorPreferencePage
      */
     public BlockedTaskEditor(String name, String labelText, Composite parent) {
       super(name, labelText, parent);
+    }
+
+    @Override
+    protected void doFillIntoGrid(Composite parent, int numColumns) {
+      super.doFillIntoGrid(parent, numColumns);
+      // Long entries would otherwise widen the page beyond the preference dialog.
+      ((GridData) getListControl(parent).getLayoutData()).widthHint = 200;
     }
 
     @Override

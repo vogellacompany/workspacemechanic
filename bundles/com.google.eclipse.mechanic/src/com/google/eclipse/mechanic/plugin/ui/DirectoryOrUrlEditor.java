@@ -11,6 +11,7 @@ package com.google.eclipse.mechanic.plugin.ui;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.ListEditor;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
 import com.google.eclipse.mechanic.internal.ResourceTaskProviderParser;
@@ -32,6 +33,13 @@ public class DirectoryOrUrlEditor extends ListEditor {
       // For testing.
       createControl(parent);
     }
+  }
+
+  @Override
+  protected void doFillIntoGrid(Composite parent, int numColumns) {
+    super.doFillIntoGrid(parent, numColumns);
+    // Long entries would otherwise widen the page beyond the preference dialog.
+    ((GridData) getListControl(parent).getLayoutData()).widthHint = 200;
   }
 
   @Override
