@@ -32,6 +32,7 @@ Tests are JUnit 5 and run inside an OSGi runtime with the workbench, so they nee
 - `features/mechanic` and `releng/update`: feature and p2 update site.
 - `releng/target-platform`: the target definition, also usable in the IDE.
 - `config/ws-mechanic`: sample `.epf` task files, not part of the plug-in.
+- `docs`: the icon and the README screenshots.
 
 ## Architecture
 

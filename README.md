@@ -6,6 +6,29 @@ The Workspace Mechanic keeps an Eclipse installation and its workspaces in a def
 It periodically evaluates tasks (preference files, key binding files, Java tasks) and offers to repair the ones that fail.
 This repository continues the original Google Code project.
 
+## Screenshots
+
+When tasks fail, a notification appears and the status bar shows a warning icon.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/notification-dark.png">
+  <img src="docs/screenshots/notification-light.png" alt="Notification about failing tasks">
+</picture>
+
+The repair dialog lists the failing tasks and lets you fix them now, later or never.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/repair-dialog-dark.png">
+  <img src="docs/screenshots/repair-dialog-light.png" alt="Repair dialog listing failing tasks">
+</picture>
+
+The preference page configures where tasks come from, how often they are checked and which tasks are blocked.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/preference-page-dark.png">
+  <img src="docs/screenshots/preference-page-light.png" alt="Workspace Mechanic preference page">
+</picture>
+
 ## Installation
 
 Add the update site below via *Help > Install New Software...* or install it from the [Eclipse Marketplace](https://marketplace.eclipse.org/content/workspace-mechanic).
