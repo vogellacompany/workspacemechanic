@@ -16,3 +16,4 @@ target/
 !.travis.yml
 !.gitignore
 !.mvn/
+!.github/
