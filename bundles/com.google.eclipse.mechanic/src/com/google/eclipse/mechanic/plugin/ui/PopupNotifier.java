@@ -12,7 +12,15 @@ package com.google.eclipse.mechanic.plugin.ui;
 
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.notifications.NotificationPopup;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.PlatformUI;
 
 import com.google.eclipse.mechanic.IMechanicService;
@@ -57,7 +65,7 @@ import com.google.eclipse.mechanic.plugin.core.IMechanicPreferences;
 public class PopupNotifier {
 
   // Popup appears for two minutes.
-  private static final int POPUP_TIMEOUT_MILLIS = (int) TimeUnit.SECONDS.toMillis(60 * 2);
+  private static final long POPUP_TIMEOUT_MILLIS = TimeUnit.MINUTES.toMillis(2);
 
   private final IStatusChangeListener statusChangeListener;
 
@@ -124,31 +132,39 @@ public class PopupNotifier {
     if (visible) {
       return;
     }
-    final Display display =
-        Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
-
-    AbstractPopup popup = new MechanicPopup(display) {
-      @Override
-      public void close() {
-        super.close();
-        visible = false;
-      }
-
-      @Override
-      public void correctConfigurationIssues() {
-        RepairDecisionProvider rdp = new UserChoiceDecisionProvider(
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-        // TODO(konigsberg): Replace with calls to runRepairManager?
-        service.getRepairManager(rdp).run();
-      }
-
-      @Override
-      public void doNotShowPopup() {
-        mechanicPreferences.doNotShowPopup();
-      }
-    };
-    popup.setDisplayTimeMillis(POPUP_TIMEOUT_MILLIS);
+    Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
+    NotificationPopup popup = NotificationPopup.forDisplay(display)
+        .title("Workspace Mechanic", true)
+        .content(this::createContent)
+        .delay(POPUP_TIMEOUT_MILLIS)
+        .build();
     visible = true;
     popup.open();
+    popup.getShell().addDisposeListener(_ -> visible = false);
+  }
+
+  private Control createContent(Composite parent) {
+    Composite composite = new Composite(parent, SWT.NONE);
+    GridLayoutFactory.fillDefaults().applyTo(composite);
+    Label label = new Label(composite, SWT.WRAP);
+    label.setText("The Workspace Mechanic found issues that need your attention.");
+    createLink(composite, "View and correct configuration issues", this::correctConfigurationIssues);
+    createLink(composite, "Disable this popup", mechanicPreferences::doNotShowPopup);
+    return composite;
+  }
+
+  private static void createLink(Composite parent, String text, Runnable action) {
+    Link link = new Link(parent, SWT.NONE);
+    link.setText("<a>" + text + "</a>");
+    link.addSelectionListener(SelectionListener.widgetSelectedAdapter(_ -> {
+      parent.getShell().close();
+      action.run();
+    }));
+  }
+
+  private void correctConfigurationIssues() {
+    RepairDecisionProvider rdp = new UserChoiceDecisionProvider(
+        PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+    service.getRepairManager(rdp).run();
   }
 }

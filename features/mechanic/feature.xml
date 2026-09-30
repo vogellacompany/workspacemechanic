@@ -40,6 +40,7 @@ You may obtain a copy of the License at
       <import plugin="org.eclipse.core.variables" version="3.2.200" match="compatible"/>
       <import plugin="org.eclipse.ui.forms" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.ui" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.jface.notifications" version="0.3.0" match="compatible"/>
    </requires>
 
    <plugin
