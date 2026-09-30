@@ -17,6 +17,7 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.notifications.NotificationPopup;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -67,6 +68,8 @@ public class PopupNotifier {
 
   // Popup appears for two minutes.
   private static final long POPUP_TIMEOUT_MILLIS = TimeUnit.MINUTES.toMillis(2);
+
+  private static final int PADDING = 10;
 
   private final IStatusChangeListener statusChangeListener;
 
@@ -135,7 +138,7 @@ public class PopupNotifier {
     }
     Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
     NotificationPopup popup = NotificationPopup.forDisplay(display)
-        .title("Workspace Mechanic", true)
+        .title(PopupNotifier::createTitle, true)
         .content(this::createContent)
         .delay(POPUP_TIMEOUT_MILLIS)
         .build();
@@ -144,13 +147,21 @@ public class PopupNotifier {
     popup.getShell().addDisposeListener(_ -> visible = false);
   }
 
+  private static Control createTitle(Composite parent) {
+    // NotificationPopup lays out custom title and content without margins.
+    ((GridLayout) parent.getLayout()).marginWidth = PADDING;
+    Label title = new Label(parent, SWT.NONE);
+    title.setText("Workspace Mechanic");
+    return title;
+  }
+
   private Control createContent(Composite parent) {
     Composite composite = new Composite(parent, SWT.NONE);
-    GridLayoutFactory.fillDefaults().applyTo(composite);
+    GridLayoutFactory.fillDefaults().margins(PADDING, PADDING).applyTo(composite);
     Label label = new Label(composite, SWT.WRAP);
     label.setText("The Workspace Mechanic found issues that need your attention.");
     // Without a width hint the label asks for its full text width and is cut off.
-    GridDataFactory.fillDefaults().grab(true, false).hint(360, SWT.DEFAULT).applyTo(label);
+    GridDataFactory.fillDefaults().grab(true, false).hint(340, SWT.DEFAULT).applyTo(label);
     createLink(composite, "View and correct configuration issues", this::correctConfigurationIssues);
     createLink(composite, "Disable this popup", mechanicPreferences::doNotShowPopup);
     return composite;
