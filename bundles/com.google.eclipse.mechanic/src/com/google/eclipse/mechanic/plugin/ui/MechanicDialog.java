@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
@@ -119,8 +118,10 @@ public class MechanicDialog extends TitleAreaDialog {
    */
   private void createForm(Composite parent) {
 
-    final FormToolkit toolkit = new FormToolkit(parent.getDisplay());
-    ScrolledForm form = toolkit.createScrolledForm(parent);
+    // Without a FormToolkit the theme styles the form like the rest of the dialog.
+    ScrolledForm form = new ScrolledForm(parent, SWT.V_SCROLL);
+    form.setExpandHorizontal(true);
+    form.setExpandVertical(true);
 
     // Size hints make the form scroll and wrap inside the dialog instead of asking for its full content size.
     GridData formData = new GridData(GridData.FILL_BOTH);
@@ -131,29 +132,33 @@ public class MechanicDialog extends TitleAreaDialog {
     TableWrapLayout layout = new TableWrapLayout();
     layout.numColumns = 2;
     layout.horizontalSpacing = 15;
-    layout.verticalSpacing = 10;
+    layout.verticalSpacing = 4;
+    layout.leftMargin = 10;
+    layout.rightMargin = 10;
 
     form.getBody().setLayout(layout);
     form.getBody().setLayoutData(new TableWrapData(
         TableWrapData.FILL_GRAB, TableWrapData.FILL_GRAB, 1, 3));
 
     for (Task item : items) {
+      if (item != items.get(0)) {
+        Label spacer = new Label(form.getBody(), SWT.NONE);
+        TableWrapData spacerData = new TableWrapData(TableWrapData.FILL, TableWrapData.TOP, 1, 2);
+        spacerData.heightHint = 8;
+        spacer.setLayoutData(spacerData);
+      }
 
-      Composite task = toolkit.createComposite(form.getBody());
-      TableWrapLayout taskLayout = new TableWrapLayout();
-      taskLayout.leftMargin = 0;
-      taskLayout.rightMargin = 0;
-      taskLayout.topMargin = 0;
-      taskLayout.bottomMargin = 0;
-      task.setLayout(taskLayout);
-      task.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
-      Label title = toolkit.createLabel(task, item.getTitle());
+      Label title = new Label(form.getBody(), SWT.NONE);
+      title.setText(item.getTitle());
       title.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
-      Label description = toolkit.createLabel(task, item.getDescription(), SWT.WRAP);
-      description.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+      title.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 
-      // add a combo box allowing the user to select the repair action to take
-      createDecisionCombo(form.getBody(), item);
+      Combo combo = createDecisionCombo(form.getBody(), item);
+      combo.setLayoutData(new TableWrapData(TableWrapData.LEFT, TableWrapData.MIDDLE, 2, 1));
+
+      Label description = new Label(form.getBody(), SWT.WRAP);
+      description.setText(item.getDescription());
+      description.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
     }
   }
 
