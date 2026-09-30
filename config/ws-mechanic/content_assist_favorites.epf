@@ -1,0 +1,5 @@
+# @title Static Imports
+# @description Offers static imports of common test APIs in code completion.
+# @task_type RECONCILE
+file_export_version=3.0
+/instance/org.eclipse.jdt.ui/content_assist_favorite_static_members=org.junit.jupiter.api.Assertions.*;org.junit.jupiter.api.Assumptions.*;org.mockito.Mockito.*;org.mockito.ArgumentMatchers.*;org.assertj.core.api.Assertions.*;org.hamcrest.Matchers.*

@@ -1,0 +1,6 @@
+# @title Set print margin
+# @description Shows the print margin at 120 characters.
+# @task_type RECONCILE
+file_export_version=3.0
+/instance/org.eclipse.ui.editors/printMargin=true
+/instance/org.eclipse.ui.editors/printMarginColumn=120

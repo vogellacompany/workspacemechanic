@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Mechanic Tests Fragment
+Bundle-SymbolicName: com.google.eclipse.mechanic.tests
+Bundle-Version: 0.5.2.qualifier
+Bundle-Vendor: Google Inc.
+Import-Package: org.junit.jupiter.api;version="[5.14.0,6.0.0)",
+ org.junit.jupiter.api.function;version="[5.14.0,6.0.0)",
+ org.mockito;version="[5.0.0,6.0.0)",
+ org.mockito.stubbing;version="[5.0.0,6.0.0)",
+ org.mockito.verification;version="[5.0.0,6.0.0)"
+Fragment-Host: com.google.eclipse.mechanic
+Bundle-RequiredExecutionEnvironment: JavaSE-25

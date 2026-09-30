@@ -1,0 +1,5 @@
+# @title Java Comment Width
+# @description Wraps Java comments at 120 characters, matching the code line width.
+# @task_type RECONCILE
+file_export_version=3.0
+/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.comment.line_length=120

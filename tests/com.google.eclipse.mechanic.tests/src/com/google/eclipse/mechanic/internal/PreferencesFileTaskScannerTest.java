@@ -1,0 +1,181 @@
+/*******************************************************************************
+ * Copyright (C) 2007, Google Inc.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
+
+package com.google.eclipse.mechanic.internal;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.google.eclipse.mechanic.IResourceTaskReference;
+import com.google.eclipse.mechanic.internal.PreferenceFileTaskScanner.EpfTaskHeaderParser;
+import com.google.eclipse.mechanic.internal.PreferenceFileTaskScanner.Header;
+import com.google.eclipse.mechanic.tests.internal.RunAsJUnitTest;
+
+/**
+ * Tests for PreferencesFileTaskItemScanner
+ * 
+ * @author smckay@google.com (Steve McKay)
+ */
+@RunAsJUnitTest
+public class PreferencesFileTaskScannerTest {
+
+  private static final String LASTMOD_EPF = join(
+      "# @title Import stuff.",
+      "# @description I'm a lastmod import.",
+      "# @task_type LASTMOD",
+      "file_export_version=3.0",
+      "# misc ui settings",
+      "/instance/org.eclipse.ui/SHOW_TEXT_ON_PERSPECTIVE_BAR=false",
+      "/instance/org.eclipse.ui/DOCK_PERSPECTIVE_BAR=left");
+
+  private static final String RECONCILER_EPF = join(
+      "# @title I'm a reconciler task.",
+      "# @description Reconciles some stuff...",
+      "# @audit_type RECONCILE", // Leaving audit_type for historical purposes.
+      "file_export_version=3.0",
+      "# misc ui settings",
+      "/instance/org.eclipse.ui/SHOW_TEXT_ON_PERSPECTIVE_BAR=false",
+      "/instance/org.eclipse.ui/DOCK_PERSPECTIVE_BAR=left");
+
+  private static final String VANILLA_EPF = join(
+      "file_export_version=3.0",
+      "/instance/org.eclipse.ui/SHOW_TEXT_ON_PERSPECTIVE_BAR=false",
+      "/instance/org.eclipse.ui/DOCK_PERSPECTIVE_BAR=left",
+      "/instance/org.eclipse.ui/showIntro=false",
+      "# howdy");
+
+  private static final String TASKTYPE_LASTMOD_EPF = join(
+      "# @title Import stuff.",
+      "# @description I'm a lastmod import.",
+      "# @task_type LASTMOD",
+      "file_export_version=3.0",
+      "# misc ui settings",
+      "/instance/org.eclipse.ui/SHOW_TEXT_ON_PERSPECTIVE_BAR=false",
+      "/instance/org.eclipse.ui/DOCK_PERSPECTIVE_BAR=left");
+
+  private static final String TASKTYPE_RECONCILER_EPF = join(
+      "# @title I'm a reconciler task.",
+      "# @description Reconciles some stuff...",
+      "# @task_type RECONCILE",
+      "file_export_version=3.0",
+      "# misc ui settings",
+      "/instance/org.eclipse.ui/SHOW_TEXT_ON_PERSPECTIVE_BAR=false",
+      "/instance/org.eclipse.ui/DOCK_PERSPECTIVE_BAR=left");
+
+  private static String join(String... lines) {
+    return String.join("\n", lines);
+  }
+
+  private InputStream getInputStream(String text) {
+    return new ByteArrayInputStream(text.getBytes());
+  }
+
+  private IResourceTaskReference taskRef;
+  private EpfTaskHeaderParser parser;
+  private InputStream in;
+  private Header header; 
+
+  @BeforeEach
+
+  public void setUp() throws Exception {
+
+    taskRef = mock(IResourceTaskReference.class);
+    when(taskRef.getName()).thenReturn("123.epf");
+    when(taskRef.getPath()).thenReturn("/foo/123.epf");
+    // The argument is actually ignored.
+    parser = new EpfTaskHeaderParser(taskRef);
+  }
+
+  @AfterEach
+
+  public void tearDown() throws Exception {
+    in.close();
+  }
+    
+  /*
+  # @title Import stuff.
+  # @description I'm a lastmod import.
+  # @task_type LASTMOD
+  */
+  @Test
+  public void testHeaderParsing_lastmod() throws Exception {
+    in = getInputStream(LASTMOD_EPF);
+
+    header = parser.parseHeader(in);
+    assertEquals(TaskType.LASTMOD, header.getType());
+    assertEquals("Import stuff.", header.getTitle());
+    assertEquals("I'm a lastmod import.", header.getDescription());
+  }
+
+  /*
+  # @title I'm a reconciler task.
+  # @description Reconciles some stuff...
+  # @task_type RECONCILE
+  */
+  @Test
+  public void testHeaderParsing_reconciler() throws Exception {
+    in = getInputStream(RECONCILER_EPF);
+
+    header = parser.parseHeader(in);
+    assertEquals(TaskType.RECONCILE, header.getType());
+    assertEquals("I'm a reconciler task.", header.getTitle());
+    assertEquals("Reconciles some stuff...", header.getDescription());
+  }
+
+  @Test
+
+  public void testHeaderParsing_vanilla() throws Exception {
+    in = getInputStream(VANILLA_EPF);
+
+    // vanilla.epf has no title or description so it uses
+    // values from the taskRef.
+    parser = new EpfTaskHeaderParser(taskRef);
+    header = parser.parseHeader(in);
+    assertEquals(TaskType.LASTMOD, header.getType());
+    assertEquals("Import preferences from: 123.epf", header.getTitle());
+    assertEquals("Imports the preferences from: /foo/123.epf",
+        header.getDescription());
+  }
+
+  /**
+   * Testing that @task_type is processed.
+   */
+  @Test
+  public void testHeaderParsing_tasktype_lastmod() throws Exception {
+
+    in = getInputStream(TASKTYPE_LASTMOD_EPF);
+
+    header = parser.parseHeader(in);
+    assertEquals(TaskType.LASTMOD, header.getType());
+    assertEquals("Import stuff.", header.getTitle());
+    assertEquals("I'm a lastmod import.", header.getDescription());
+  }
+
+  /**
+   * Testing that @task_type is processed.
+   */
+  @Test
+  public void testHeaderParsing_tasktype_reconcile() throws Exception {
+    in = getInputStream(TASKTYPE_RECONCILER_EPF);
+
+    header = parser.parseHeader(in);
+    assertEquals(TaskType.RECONCILE, header.getType());
+    assertEquals("I'm a reconciler task.", header.getTitle());
+    assertEquals("Reconciles some stuff...", header.getDescription());
+  }
+}

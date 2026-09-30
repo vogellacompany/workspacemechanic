@@ -1,28 +1,46 @@
 # Eclipse Workspace Mechanic
-New Repo for workspace mechanic, overtaken from google code
 
-Workspace mechanic build is full maven based. Build it with mvn clean install or the corresponding m2e command.
+The Workspace Mechanic keeps an Eclipse installation and its workspaces in a defined state.
+It periodically evaluates tasks (preference files, key binding files, Java tasks) and offers to repair the ones that fail.
+This repository continues the original Google Code project.
 
-This command builds the plugins, features and the update site.
+## Installation
 
-## Update Site
+Add the update site below via *Help > Install New Software...* or install it from the [Eclipse Marketplace](https://marketplace.eclipse.org/content/workspace-mechanic).
 
 https://alfsch.github.io/eclipse-updates/workspacemechanic
 
-## Travis CI Build
-The CI build is hosted on https://travis-ci.org/alfsch/workspacemechanic
+## Build
 
-## Next Steps are
-1. Fix Findbugs and used rules
-2. Fix PMD's and used rules
-3. Fix Checkstyles and used rules
-4. Use Neon as base
-5. Migrate to Java 8
-6. Dokumentation in Wiki
+Requirements: Java 25 and Maven 3.9.9 or newer.
 
-and not to forget
+```bash
+mvn clean verify
+```
 
-**Bugfixing**
+This builds the plug-ins, the feature and the p2 update site (`releng/update/target/repository`) and runs the tests.
 
-## Build Status
-[![Build Status](https://travis-ci.org/alfsch/workspacemechanic.svg?branch=master)](https://travis-ci.org/alfsch/workspacemechanic)
+The build uses [Tycho](https://github.com/eclipse-tycho/tycho) in pomless mode: the root `pom.xml` is the only POM, and the modules are derived from their `MANIFEST.MF`, `feature.xml`, `category.xml` and `.target` files.
+`.mvn/maven.config` sets the Tycho version and builds with four parallel threads.
+
+Dependencies come from the target platform `releng/target-platform/target-platform.target`, which you can also open in the Eclipse IDE and set as the active target platform.
+
+### Tests
+
+The tests use JUnit 5 and run inside an OSGi runtime with the workbench, so they need a display.
+On a headless Linux machine, run the build under Xvfb:
+
+```bash
+xvfb-run -a mvn clean verify
+```
+
+To skip the tests, add `-DskipTests`.
+To run a single test class:
+
+```bash
+mvn clean verify -pl :com.google.eclipse.mechanic.tests -am -Dtest=EpfFileModelTest -DfailIfNoTests=false
+```
+
+## License
+
+Workspace Mechanic is licensed under the [Eclipse Public License 2.0](LICENSE) (SPDX: `EPL-2.0`).
