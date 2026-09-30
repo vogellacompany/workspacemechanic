@@ -41,7 +41,7 @@ public class RootTaskScannerTest {
     };
     MechanicLog log = new MechanicLog(new EmptyLog());
     RootTaskScanner scanner = new RootTaskScanner(log, scannerPoint);
-    TaskCollector collector = task -> {};
+    TaskCollector collector = _ -> {};
     scanner.scan(collector);
     // We just want to be sure that this does not throw
   }

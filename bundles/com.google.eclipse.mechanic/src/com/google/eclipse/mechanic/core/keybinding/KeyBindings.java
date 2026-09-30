@@ -97,7 +97,7 @@ class KeyBindings {
   static Map<KbaChangeSetQualifier, List<Binding>> buildQualifierToBindingMap(List<Binding> bindings) {
     Map<KbaChangeSetQualifier, List<Binding>> result = new HashMap<>();
     for (Binding binding : bindings) {
-      result.computeIfAbsent(qualifierForBinding(binding, Action.ADD), q -> new ArrayList<>())
+      result.computeIfAbsent(qualifierForBinding(binding, Action.ADD), _ -> new ArrayList<>())
           .add(binding);
     }
     return result;

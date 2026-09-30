@@ -143,7 +143,7 @@ public abstract class BaseOutputDialog extends Dialog {
     titleLabel.setText(text);
   }
 
-  private final ModifyListener validateOnChange = e -> validate();
+  private final ModifyListener validateOnChange = _ -> validate();
 
   protected Text createTextBox(Composite parent) {
     Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
@@ -187,7 +187,7 @@ public abstract class BaseOutputDialog extends Dialog {
     // Add saved file location
     createLabel(container, "Saved File Location:");
     savedLocationText = createTextBox(container);
-    savedLocationText.addModifyListener(e -> {
+    savedLocationText.addModifyListener(_ -> {
       willVerifyOverwrite = true;
       validate();
     });

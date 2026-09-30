@@ -172,7 +172,7 @@ public class EpfOutputDialog extends BaseOutputDialog {
     acceptedPreferences.setInput(preferences.keySet().toArray());
 
     acceptedPreferences.setAllChecked(true);
-    acceptedPreferences.addCheckStateListener(event -> {
+    acceptedPreferences.addCheckStateListener(_ -> {
       Set<String> newSelectedKeys = new HashSet<String>();
       for (Object obj : acceptedPreferences.getCheckedElements()) {
         newSelectedKeys.add((String) obj);
