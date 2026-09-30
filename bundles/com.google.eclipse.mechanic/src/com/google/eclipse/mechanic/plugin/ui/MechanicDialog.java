@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -28,9 +29,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.forms.events.ExpansionAdapter;
-import org.eclipse.ui.forms.events.ExpansionEvent;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.TableWrapData;
@@ -95,8 +93,9 @@ public class MechanicDialog extends TitleAreaDialog {
    */
   @Override 
   protected Control createDialogArea(Composite parent) {
-    // call through to our 
-    return createForm(parent);
+    Composite area = (Composite) super.createDialogArea(parent);
+    createForm(area);
+    return area;
   }
 
   /**
@@ -118,19 +117,16 @@ public class MechanicDialog extends TitleAreaDialog {
   /**
    * Add a form to the supplied Composite.
    */
-  private Control createForm(Composite parent) {
+  private void createForm(Composite parent) {
 
     final FormToolkit toolkit = new FormToolkit(parent.getDisplay());
-    final ScrolledForm form = toolkit.createScrolledForm(parent);
+    ScrolledForm form = toolkit.createScrolledForm(parent);
 
-    /*
-     * For the life of me I can't understand why I have to supply
-     * a GridData instance to the form object in order to get the form
-     * to fill the dialog area.
-     * 
-     * BTW, I only found this out through trial and error.
-     */
-    form.setLayoutData(new GridData(GridData.FILL_BOTH));
+    // Size hints make the form scroll and wrap inside the dialog instead of asking for its full content size.
+    GridData formData = new GridData(GridData.FILL_BOTH);
+    formData.widthHint = 600;
+    formData.heightHint = 350;
+    form.setLayoutData(formData);
 
     TableWrapLayout layout = new TableWrapLayout();
     layout.numColumns = 2;
@@ -143,26 +139,22 @@ public class MechanicDialog extends TitleAreaDialog {
 
     for (Task item : items) {
 
-      // add an expandable description of the task, with a pretty title
-      ExpandableComposite ec = toolkit.createExpandableComposite(form.getBody(),
-          ExpandableComposite.TREE_NODE | ExpandableComposite.CLIENT_INDENT);
-      ec.setText(item.getTitle());
-      Label label = toolkit.createLabel(ec, item.getDescription(), SWT.WRAP);
-      ec.setClient(label);
-      ec.addExpansionListener(new ExpansionAdapter() {
-        @Override 
-        public void expansionStateChanged(ExpansionEvent e) {
-          form.reflow(true);
-        }
-      });
-      ec.setExpanded(true);
-      ec.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+      Composite task = toolkit.createComposite(form.getBody());
+      TableWrapLayout taskLayout = new TableWrapLayout();
+      taskLayout.leftMargin = 0;
+      taskLayout.rightMargin = 0;
+      taskLayout.topMargin = 0;
+      taskLayout.bottomMargin = 0;
+      task.setLayout(taskLayout);
+      task.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+      Label title = toolkit.createLabel(task, item.getTitle());
+      title.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
+      Label description = toolkit.createLabel(task, item.getDescription(), SWT.WRAP);
+      description.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 
       // add a combo box allowing the user to select the repair action to take
       createDecisionCombo(form.getBody(), item);
     }
-
-    return parent;
   }
 
   /**
