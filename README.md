@@ -31,9 +31,12 @@ The preference page configures where tasks come from, how often they are checked
 
 ## Installation
 
-Add the update site below via *Help > Install New Software...* or install it from the [Eclipse Marketplace](https://marketplace.eclipse.org/content/workspace-mechanic).
+Add the update site below via *Help > Install New Software...*:
 
-https://alfsch.github.io/eclipse-updates/workspacemechanic
+https://vogellacompany.github.io/workspacemechanic/
+
+Every push to `main` builds, signs and publishes the newest version there; older builds are not kept.
+The [Eclipse Marketplace listing](https://marketplace.eclipse.org/content/workspace-mechanic) still points to the old update site of the previous maintainers.
 
 ## Build
 

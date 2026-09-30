@@ -33,7 +33,7 @@ You may obtain a copy of the License at
    </license>
 
    <url>
-      <update label="Workspace Mechanic Updates" url="https://alfsch.github.io/eclipse-updates/workspacemechanic"/>
+      <update label="Workspace Mechanic Updates" url="https://vogellacompany.github.io/workspacemechanic/"/>
    </url>
 
    <requires>

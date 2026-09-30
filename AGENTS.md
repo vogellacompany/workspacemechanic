@@ -22,6 +22,8 @@ Dependencies come only from the target platform `releng/target-platform/target-p
 Consume libraries with `Import-Package` in `MANIFEST.MF`, and add a library that must ship with the plug-in to `features/mechanic/feature.xml` so the update site contains it.
 The code does not use Guava.
 
+`.github/workflows/build.yml` builds and tests every push and pull request, signing with a throwaway key; `release.yml` signs with the organization's `MAVEN_GPG_KEY` and publishes each push to `main` to the `gh-pages` composite site through `releng/update-composite-site.sh`, which keeps only the newest build.
+
 Tests are JUnit 5 and run inside an OSGi runtime with the workbench, so they need a display; locally use `xvfb-run -a mvn ...`.
 
 ## Layout

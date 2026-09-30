@@ -9,6 +9,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- PGP signing of the update site is off by default, the CI enables it with -Dgpg.skip=false -->
+        <gpg.skip>true</gpg.skip>
     </properties>
 
     <modules>
@@ -83,4 +85,37 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <!-- Signs the update site's p2 artifacts, the key file comes from -Dtycho.pgp.signer.bc.secretKeys,
+             the passphrase from MAVEN_GPG_PASSPHRASE. Only the update site module has a category.xml. -->
+        <profile>
+            <id>sign-update-site</id>
+            <activation>
+                <file>
+                    <exists>${basedir}/category.xml</exists>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.eclipse.tycho</groupId>
+                        <artifactId>tycho-gpg-plugin</artifactId>
+                        <version>${tycho-version}</version>
+                        <executions>
+                            <execution>
+                                <id>pgp-sign</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>sign-p2-artifacts</goal>
+                                </goals>
+                                <configuration>
+                                    <signer>bc</signer>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
