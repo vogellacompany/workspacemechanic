@@ -11,6 +11,7 @@
 package com.google.eclipse.mechanic.internal;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -64,6 +65,8 @@ public class MechanicPreferences implements IMechanicPreferences {
       try {
         providers.add(toProvider(source));
         sourcesFailingInitialization.remove(source);
+      } catch (FileNotFoundException e) {
+        // The default task directories usually do not exist, so a missing directory is not an error.
       } catch (IOException e) {
         if (sourcesFailingInitialization.add(source)) {
           log.logError(e);
