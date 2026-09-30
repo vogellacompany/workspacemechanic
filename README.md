@@ -1,3 +1,5 @@
+<img src="docs/mechanic-icon.png" alt="Workspace Mechanic icon" width="128" align="right">
+
 # Eclipse Workspace Mechanic
 
 The Workspace Mechanic keeps an Eclipse installation and its workspaces in a defined state.

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="com.google.eclipse.mechanic.feature"
+      plugin="com.google.eclipse.mechanic"
       label="Workspace Mechanic"
       version="0.5.2.qualifier"
       provider-name="Google, Inc.">
