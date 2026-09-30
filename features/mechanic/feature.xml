@@ -5,7 +5,7 @@
       version="0.5.2.qualifier"
       provider-name="Google, Inc.">
 
-   <description url="https://github.com/alfsch/alfsch.workspacemechanic.update">
+   <description url="https://github.com/vogellacompany/workspacemechanic">
       Workspace Mechanic provides automated configuration and monitoring
 of your Eclipse installation and workspaces.
    </description>
