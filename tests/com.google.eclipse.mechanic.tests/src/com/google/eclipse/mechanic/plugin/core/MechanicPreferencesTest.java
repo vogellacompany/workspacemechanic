@@ -189,6 +189,6 @@ public class MechanicPreferencesTest {
   }
 
   private void setToDefault(String pref) {
-    MechanicPlugin.getDefault().getPluginPreferences().setToDefault(pref);
+    MechanicPlugin.getDefault().getPreferenceStore().setToDefault(pref);
   }
 }

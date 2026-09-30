@@ -48,7 +48,6 @@ import com.google.eclipse.mechanic.core.recorder.ChangeCollector;
 import com.google.eclipse.mechanic.core.recorder.IPreferenceRecordingService;
 import com.google.eclipse.mechanic.plugin.core.MechanicLog;
 import com.google.eclipse.mechanic.plugin.core.MechanicPlugin;
-import com.google.eclipse.mechanic.plugin.core.OldMechanicPreferences;
 
 /**
  * Widget that appears in the status bar.
@@ -102,7 +101,7 @@ public class MechanicStatusControlContribution extends WorkbenchWindowControlCon
   }
 
   private static Action createHelpAction() {
-    String helpUrl = OldMechanicPreferences.getHelpUrl();
+    String helpUrl = MechanicPlugin.getDefault().getMechanicPreferences().getHelpUrl();
     try {
       return new OpenUrlAction(helpUrl, "Help...");
     } catch (MalformedURLException e) {

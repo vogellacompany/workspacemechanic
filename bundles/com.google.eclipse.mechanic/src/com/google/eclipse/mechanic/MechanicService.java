@@ -108,7 +108,11 @@ public final class MechanicService implements IMechanicService {
 
     // add a property change listener to the plugin prefs so we can
     // update our running config when prefs have been changed.
-    mechanicPreferences.addListener(new PreferenceChangeListener());
+    mechanicPreferences.addListener(event -> {
+      if (!isStopped()) {
+        start();
+      }
+    });
 
     job = new ServiceJob();
   }
@@ -409,16 +413,4 @@ public final class MechanicService implements IMechanicService {
     }
   }
 
-  /**
-   * Wakes up the service when a preferences change is received.
-   */
-  @SuppressWarnings("deprecation") // for IPropertyChangeListener and PropertyChangeEvent
-  private static class PreferenceChangeListener implements org.eclipse.core.runtime.Preferences.IPropertyChangeListener {
-    public void propertyChange(org.eclipse.core.runtime.Preferences.PropertyChangeEvent event) {
-      // if the service is stopped, we don't do anything.
-      if (!MechanicService.getInstance().isStopped()) {
-        MechanicService.getInstance().start();
-      }
-    }
-  }
 }

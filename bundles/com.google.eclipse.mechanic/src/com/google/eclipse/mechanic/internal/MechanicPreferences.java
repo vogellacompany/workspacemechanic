@@ -10,97 +10,147 @@
 
 package com.google.eclipse.mechanic.internal;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
 
 import com.google.eclipse.mechanic.IResourceTaskProvider;
 import com.google.eclipse.mechanic.Task;
 import com.google.eclipse.mechanic.plugin.core.IMechanicPreferences;
-import com.google.eclipse.mechanic.plugin.core.OldMechanicPreferences;
+import com.google.eclipse.mechanic.plugin.core.MechanicLog;
+import com.google.eclipse.mechanic.plugin.core.MechanicPlugin;
+import com.google.eclipse.mechanic.plugin.core.ResourceTaskProvider;
 
 /**
- * Implementation of {@link IMechanicPreferences}, relies on {@link OldMechanicPreferences}.
+ * Implementation of {@link IMechanicPreferences} backed by the plug-in's preference store.
  */
-@SuppressWarnings("deprecation") // Uses the old-style API.
 public class MechanicPreferences implements IMechanicPreferences {
 
+  private final MechanicLog log = MechanicLog.getDefault();
+
+  // Sources whose initialization failed, so each failure is only logged once.
+  private final Set<String> sourcesFailingInitialization = ConcurrentHashMap.newKeySet();
+
+  private static IPreferenceStore getStore() {
+    return MechanicPlugin.getDefault().getPreferenceStore();
+  }
+
   public void addListener(IPropertyChangeListener listener) {
-    OldMechanicPreferences.addListener(listener);
+    getStore().addPropertyChangeListener(listener);
   }
 
   public void removeListener(IPropertyChangeListener listener) {
-    OldMechanicPreferences.removeListener(listener);
+    getStore().removePropertyChangeListener(listener);
   }
 
   public List<IResourceTaskProvider> getTaskProviders() {
-    return OldMechanicPreferences.getTaskProviders();
+    String paths = getString(DIRS_PREF);
+
+    ResourceTaskProviderParser parser =
+        new ResourceTaskProviderParser(VariableManagerStringParser.INSTANCE);
+    List<IResourceTaskProvider> providers = new ArrayList<>();
+    for (String source : parser.parse(paths)) {
+      try {
+        providers.add(toProvider(source));
+        sourcesFailingInitialization.remove(source);
+      } catch (IOException e) {
+        if (sourcesFailingInitialization.add(source)) {
+          log.logError(e);
+        }
+      }
+    }
+    return providers;
+  }
+
+  private static ResourceTaskProvider toProvider(String source) throws IOException {
+    try {
+      URI uri = new URI(source);
+      if (uri.getScheme() != null) {
+        return UriTaskProvider.newInstance(uri, UriCaches.getStateSensitiveCache(),
+            UriCaches.getStateSensitiveCache());
+      }
+    } catch (URISyntaxException e) {
+      // Falls through for paths like C:\path\to\file.
+    }
+    return FileTaskProvider.newInstance(new File(source));
   }
 
   public int getThreadSleepSeconds() {
-    return OldMechanicPreferences.getThreadSleepSeconds();
+    return cleanSleepSeconds(getInt(SLEEPAGE_PREF));
   }
 
   public int cleanSleepSeconds(int seconds) {
-    return OldMechanicPreferences.cleanSleepSeconds(seconds);
+    return Math.max(seconds, MINIMUM_SLEEP_SECONDS);
   }
 
   public Set<String> getBlockedTaskIds() {
-    return OldMechanicPreferences.getBlockedTaskIds();
+    return new HashSet<>(new BlockedTaskIdsParser().parse(getString(BLOCKED_PREF)));
   }
 
   public void setBlockedTaskIds(Set<String> ids) {
-    OldMechanicPreferences.setBlockedTaskIds(ids);
+    getStore().setValue(BLOCKED_PREF, new BlockedTaskIdsParser().unparse(ids));
   }
 
   public void blockItem(Task item) {
-    OldMechanicPreferences.blockItem(item);
+    Set<String> ids = getBlockedTaskIds();
+    ids.add(item.getId());
+    setBlockedTaskIds(ids);
   }
 
   public String getHelpUrl() {
-    return OldMechanicPreferences.getHelpUrl();
+    return getString(HELP_URL_PREF);
   }
 
   public boolean contains(String key) {
-    return OldMechanicPreferences.contains(key);
+    return getStore().contains(key);
   }
 
   public int getInt(String key) {
-    return OldMechanicPreferences.getInt(key);
+    return getStore().getInt(key);
   }
 
   public long getLong(String key) {
-    return OldMechanicPreferences.getLong(key);
+    return getStore().getLong(key);
   }
 
   public void setLong(String key, long value) {
-    OldMechanicPreferences.setLong(key, value);
+    getStore().setValue(key, value);
   }
 
   public String getString(String key) {
-    return OldMechanicPreferences.getString(key);
+    return getStore().getString(key);
   }
 
   public void setString(String key, String value) {
-    OldMechanicPreferences.setString(key, value);
+    getStore().setValue(key, value);
   }
 
   public boolean isShowPopup() {
-    return OldMechanicPreferences.isShowPopup();
+    return getStore().getBoolean(SHOW_POPUP_PREF);
   }
 
   public void doNotShowPopup() {
-    OldMechanicPreferences.doNotShowPopup();
+    getStore().setValue(SHOW_POPUP_PREF, false);
   }
 
   public void showPopup() {
-    OldMechanicPreferences.showPopup();
+    getStore().setValue(SHOW_POPUP_PREF, true);
   }
 
+  // Eclipse offers no public replacement for this version check.
+  @SuppressWarnings("deprecation")
   public IStatus validatePreferencesFile(IPath path) {
-    return OldMechanicPreferences.validatePreferencesFile(path);
+    return org.eclipse.core.runtime.Preferences.validatePreferenceVersions(path);
   }
 }

@@ -15,7 +15,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
+import org.eclipse.jface.util.IPropertyChangeListener;
 
 import com.google.eclipse.mechanic.IResourceTaskProvider;
 import com.google.eclipse.mechanic.Task;
@@ -23,7 +23,6 @@ import com.google.eclipse.mechanic.Task;
 /**
  * Interface for mechanic preferences.
  */
-@SuppressWarnings("deprecation") // Uses the old-style API.
 public interface IMechanicPreferences {
   public static final String DIRS_PREF = "mechanicSourceDirectories";
 

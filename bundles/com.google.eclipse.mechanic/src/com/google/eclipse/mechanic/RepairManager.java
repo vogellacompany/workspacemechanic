@@ -17,7 +17,7 @@ import java.util.Objects;
 import com.google.eclipse.mechanic.RepairDecisionProvider.Decision;
 import com.google.eclipse.mechanic.RepairDecisionProvider.ResponseStatus;
 import com.google.eclipse.mechanic.plugin.core.MechanicLog;
-import com.google.eclipse.mechanic.plugin.core.OldMechanicPreferences;
+import com.google.eclipse.mechanic.plugin.core.MechanicPlugin;
 
 /**
  * Provides a controller for the process of selecting tasks to be repaired,
@@ -74,7 +74,7 @@ public class RepairManager implements Runnable {
             // don't do anything this time
             break;
           case NEVER:
-            OldMechanicPreferences.blockItem(entry.getKey());
+            MechanicPlugin.getDefault().getMechanicPreferences().blockItem(entry.getKey());
             break;
           default:
             throw new RuntimeException("Unhandled Decision value.");

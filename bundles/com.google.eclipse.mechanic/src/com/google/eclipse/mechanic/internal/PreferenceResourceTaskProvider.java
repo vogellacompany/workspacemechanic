@@ -15,7 +15,7 @@ import java.util.Set;
 import com.google.eclipse.mechanic.ICollector;
 import com.google.eclipse.mechanic.IResourceTaskProvider;
 import com.google.eclipse.mechanic.IResourceTaskReference;
-import com.google.eclipse.mechanic.plugin.core.OldMechanicPreferences;
+import com.google.eclipse.mechanic.plugin.core.MechanicPlugin;
 
 /**
  * This provider is loaded by the extension mechanism only, and should not
@@ -27,7 +27,7 @@ public class PreferenceResourceTaskProvider implements IResourceTaskProvider {
   private IResourceTaskProvider get() {
     // This removes duplicates, but ensures insertion order.
      Set<IResourceTaskProvider> providers = new LinkedHashSet<>();
-     for (IResourceTaskProvider provider : OldMechanicPreferences.getTaskProviders()) {
+     for (IResourceTaskProvider provider : MechanicPlugin.getDefault().getMechanicPreferences().getTaskProviders()) {
        providers.add(provider);
      }
 
