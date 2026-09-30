@@ -48,7 +48,7 @@ public class RootTaskScanner implements TaskScanner {
         scanner.scan(collector);
       } catch (RuntimeException e) {
         log.logError(e, "Exception scanning '%s', class '%s'",
-            collector, collector.getClass().getName());
+            scanner, scanner.getClass().getName());
       }
     }
   }
