@@ -67,13 +67,14 @@ public final class ClassFileTaskScanner extends ResourceTaskScanner {
      */
     List<Class<?>> taskClasses = new ArrayList<>();
 
-    // HACK: This isn't really where this logic belongs, but it's a start.
-    if (!(taskSource instanceof FileTaskProvider)) {
-      DEBUGLOG.log(Level.FINE, "Not loading class tasks from {0}", taskSource);
-    }
     ListCollector<IResourceTaskReference> taskCollector = ListCollector.create();
     taskSource.collectTaskReferences(EXT_PATH, ".class", taskCollector);
     for (IResourceTaskReference taskRef : taskCollector.get()) {
+      // Executable tasks are only ever loaded from the local file system, never from a URL.
+      if (taskRef.asFile() == null) {
+        DEBUGLOG.log(Level.FINE, "Not loading class task from {0}", taskRef);
+        continue;
+      }
       Class<?> clazz = null;
       try {
 
