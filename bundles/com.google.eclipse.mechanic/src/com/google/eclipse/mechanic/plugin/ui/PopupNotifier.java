@@ -137,14 +137,18 @@ public class PopupNotifier {
       return;
     }
     Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
-    NotificationPopup popup = NotificationPopup.forDisplay(display)
+    NotificationPopup popup = createPopup(display);
+    visible = true;
+    popup.open();
+    popup.getShell().addDisposeListener(_ -> visible = false);
+  }
+
+  NotificationPopup createPopup(Display display) {
+    return NotificationPopup.forDisplay(display)
         .title(PopupNotifier::createTitle, true)
         .content(this::createContent)
         .delay(POPUP_TIMEOUT_MILLIS)
         .build();
-    visible = true;
-    popup.open();
-    popup.getShell().addDisposeListener(_ -> visible = false);
   }
 
   private static Control createTitle(Composite parent) {
