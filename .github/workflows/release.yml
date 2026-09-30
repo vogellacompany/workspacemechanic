@@ -77,6 +77,7 @@ jobs:
           rm -rf "gh-pages/releases/$version"
           mkdir -p "gh-pages/releases/$version"
           cp -r releng/update/target/repository/. "gh-pages/releases/$version"
+          cp docs/mechanic-icon.png gh-pages/
           # the site carries this build only; everything else is dropped
           releng/update-composite-site.sh --only "$version" gh-pages
 
