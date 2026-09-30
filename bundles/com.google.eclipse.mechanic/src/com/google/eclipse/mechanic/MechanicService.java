@@ -92,7 +92,8 @@ public final class MechanicService implements IMechanicService {
   // job control as part of our interface.
   private final Job job;
 
-  private MechanicStatus currentStatus = MechanicStatus.STOPPED;
+  // Written by the service job and by stop(), read from the UI thread.
+  private volatile MechanicStatus currentStatus = MechanicStatus.STOPPED;
 
   private AtomicBoolean repairing = new AtomicBoolean(false);
 
